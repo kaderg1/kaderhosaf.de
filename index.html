@@ -1,35 +1,66 @@
-
-<!DOCTYPE html>
-<html lang="de">
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kader Hosaf — Portfolio</title>
-  <style>
-    body {
-      margin: 0;
-      background: #111;
-      color: white;
-      font-family: Arial, sans-serif;
-    }
-    main {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-    h1 {
-      font-size: clamp(50px, 10vw, 140px);
-      letter-spacing: -5px;
-    }
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b090c">
+  <meta name="description" content="Kader Hosaf — selected design projects, visual experiments and creative work.">
+  <title>Kader Hosaf — Creative Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
 </head>
 <body>
-  <main>
-    <h1>KADER HOSAF</h1>
-    <p>Creative Portfolio 2026</p>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="cursor-glow" aria-hidden="true"></div>
+  <header class="site-header" id="top">
+    <a class="wordmark" href="#top" aria-label="Kader Hosaf — home">KH<span class="pink">.</span></a>
+    <button class="menu-toggle" type="button" aria-controls="primary-nav" aria-expanded="false" aria-label="Open menu"><span></span><span></span></button>
+    <nav class="primary-nav" id="primary-nav" aria-label="Main navigation">
+      <a href="#work">WORK <sup>05</sup></a>
+      <a href="#about">ABOUT</a>
+      <a href="#contact">CONTACT <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-orbit orbit-one" aria-hidden="true"></div>
+      <div class="hero-orbit orbit-two" aria-hidden="true"></div>
+      <div class="hero-dots" aria-hidden="true"></div>
+      <div class="hero-topline"><span>INDEPENDENT CREATIVE PORTFOLIO</span><span>© 2026</span></div>
+      <div class="hero-main">
+        <div class="hero-copy reveal">
+          <p class="eyebrow"><span class="live-dot"></span> DESIGN / CONCEPT / VISUALS</p>
+          <h1 id="hero-title">PORT<span class="outline">FOLIO</span><span class="hero-period">.</span></h1>
+          <p class="hero-subtitle">Ideas made visible.<br>Objects made meaningful.</p>
+          <a class="round-link" href="#work" aria-label="Explore selected work">EXPLORE WORK <span aria-hidden="true">↘</span></a>
+        </div>
+        <div class="hero-art reveal" aria-label="Pink sculptural lettering from the original portfolio design">
+          <img src="assets/cover.webp" alt="Original portfolio cover with glossy pink Kader Hosaf lettering" fetchpriority="high">
+          <span class="art-stamp">THE VISUAL WORLD OF<br>KADER HOSAF</span>
+        </div>
+      </div>
+      <div class="hero-bottom"><span>SCROLL TO EXPLORE</span><span class="scroll-line" aria-hidden="true"></span><span>01 — 05</span></div>
+    </section>
+
+    <section class="work section-pad" id="work" aria-labelledby="work-title">
+      <div class="section-heading reveal"><div><p class="eyebrow">/ SELECTED WORK</p><h2 id="work-title">FEATURED <em>PROJECTS</em><span class="pink">.</span></h2></div><span class="section-count">( 001 — 005 )</span></div>
+      <div class="project-list">
+        <a class="project-card reveal" href="#contact" aria-label="ONERA project — get in touch for more information"><div class="project-media"><img src="assets/onera.webp" alt="ONERA portable heated lunchbox product render" loading="lazy"><span class="project-view">LET'S TALK ↗</span></div><div class="project-meta"><span class="project-index">01 / PRODUCT DESIGN</span><h3>ONERA</h3><span class="project-arrow" aria-hidden="true">↗</span></div><p>Portable heating, reimagined for everyday movement.</p></a>
+        <a class="project-card reveal" href="#contact" aria-label="MOVO project — get in touch for more information"><div class="project-media"><img src="assets/movo.webp" alt="MOVO modular sharing and serving object" loading="lazy"><span class="project-view">LET'S TALK ↗</span></div><div class="project-meta"><span class="project-index">02 / PRODUCT DESIGN</span><h3>MOVO</h3><span class="project-arrow" aria-hidden="true">↗</span></div><p>A new way to share, interact and connect around the table.</p></a>
+        <a class="project-card reveal" href="#contact" aria-label="NEEXA project — get in touch for more information"><div class="project-media"><img src="assets/neexa.webp" alt="NEEXA brand identity presentation" loading="lazy"><span class="project-view">LET'S TALK ↗</span></div><div class="project-meta"><span class="project-index">03 / BRAND IDENTITY</span><h3>NEEXA</h3><span class="project-arrow" aria-hidden="true">↗</span></div><p>Bold typography and a contemporary visual identity.</p></a>
+        <a class="project-card reveal" href="#contact" aria-label="Photography project — get in touch for more information"><div class="project-media"><img src="assets/photography.webp" alt="Constructed reality photography with a miniature car" loading="lazy"><span class="project-view">LET'S TALK ↗</span></div><div class="project-meta"><span class="project-index">04 / PHOTOGRAPHY</span><h3>PHOTO</h3><span class="project-arrow" aria-hidden="true">↗</span></div><p>Playing with perspective, scale and constructed reality.</p></a>
+        <a class="project-card reveal" href="#contact" aria-label="Sketches project — get in touch for more information"><div class="project-media"><img src="assets/sketches.webp" alt="Industrial design sketches and product renderings" loading="lazy"><span class="project-view">LET'S TALK ↗</span></div><div class="project-meta"><span class="project-index">05 / PROCESS</span><h3>SKETCHES</h3><span class="project-arrow" aria-hidden="true">↗</span></div><p>Exploring ideas through sketches, form and rendering.</p></a>
+      </div>
+    </section>
+
+    <section class="about section-pad" id="about" aria-labelledby="about-title"><div class="about-grid"><div class="reveal"><p class="eyebrow">/ A LITTLE ABOUT ME</p><h2 id="about-title">HI, I'M<br><span class="pink">KADER</span><span class="outline-light">.</span></h2></div><div class="about-body reveal"><p>I work across product design, graphic design and visual storytelling — bringing ideas to life through a mix of curiosity, structure and experimentation.</p><p>I like design that feels clear, functional and just a little unexpected.</p><a class="text-link" href="mailto:kaderhsf@gmail.com">LET'S CONNECT <span aria-hidden="true">↗</span></a></div></div><span class="about-decoration" aria-hidden="true">✳</span></section>
+
+    <section class="contact section-pad" id="contact" aria-labelledby="contact-title"><p class="eyebrow reveal">/ HAVE SOMETHING IN MIND?</p><h2 id="contact-title" class="reveal">LET'S MAKE<br><span>IT HAPPEN</span><span class="pink">.</span></h2><a class="contact-cta reveal" href="mailto:kaderhsf@gmail.com">GET IN TOUCH <span aria-hidden="true">↗</span></a></section>
   </main>
+  <footer class="site-footer"><a class="wordmark" href="#top">KH<span class="pink">.</span></a><span>© <span id="year">2026</span> KADER HOSAF</span><a href="#top">BACK TO TOP ↑</a></footer>
 </body>
 </html>
-
