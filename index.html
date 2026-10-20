@@ -1,34 +1,303 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kader Hosaf — Portfolio</title>
-  <style>
-    body {
-      margin: 0;
-      background: #111;
-      color: white;
-      font-family: Arial, sans-serif;
-    }
-    main {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-    h1 {
-      font-size: clamp(50px, 10vw, 140px);
-      letter-spacing: -5px;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kader Hosaf Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@100;300;400;500;700;800&family=Geist:wght@300;400;500&display=swap">
+<style>
+/* Dharma Gothic: wird genutzt, sobald die Schrift installiert ist bzw. die Webfont-Dateien auf der echten Seite liegen.
+   Bis dahin springt "Big Shoulders Display" als ähnliche, schmale Ersatzschrift ein. */
+@font-face{font-family:"DG";font-weight:100;src:local("Dharma Gothic E Thin"),local("DharmaGothicE-Thin"),local("Dharma Gothic E ExLight"),local("DharmaGothicE-ExLight")}
+@font-face{font-family:"DG";font-weight:300;src:local("Dharma Gothic E Light"),local("DharmaGothicE-Light")}
+@font-face{font-family:"DG";font-weight:400;src:local("Dharma Gothic E Regular"),local("DharmaGothicE-Regular"),local("Dharma Gothic E")}
+@font-face{font-family:"DG";font-weight:700;src:local("Dharma Gothic E Bold"),local("DharmaGothicE-Bold")}
+@font-face{font-family:"DG";font-weight:800;src:local("Dharma Gothic E ExBold"),local("DharmaGothicE-ExBold"),local("Dharma Gothic E Heavy"),local("DharmaGothicE-Heavy")}
+
+/* Layout: Schwarz-Weiß wie im Illustrator-Entwurf – weiße Kopfzeile, große schwarze Bühne, hohe schmale Versalien als Hauptdarsteller */
+:root{
+  --paper:#ffffff; --ink:#0a0a0a; --grey:#6b6b6b; --soft:#f2f2f2; --line:#dcdcdc; --ink-line:#2a2a2a;
+  --f-display:"DG","Dharma Gothic E","Big Shoulders Display","Arial Narrow",sans-serif;
+  --f-body:"Geist",-apple-system,"Helvetica Neue",Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--paper)}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid currentColor;outline-offset:4px}
+.wrap{max-width:1600px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+@media (min-width:900px){.wrap{padding-left:max(5.5vw,env(safe-area-inset-left,0px));padding-right:max(5.5vw,env(safe-area-inset-right,0px))}}
+.d{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.005em;line-height:.9;font-weight:400}
+
+/* Kopfzeile */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--paper)}
+.bar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:clamp(64px,8.6vw,124px);gap:16px}
+.bar a,.bar button{font-family:var(--f-display);text-transform:uppercase;font-size:clamp(22px,2.6vw,40px);line-height:1;background:none;border:0;color:var(--ink);padding:0;cursor:pointer}
+.bar a{transition:opacity .2s}
+.bar a:hover{opacity:.55}
+.center{display:flex;align-items:center;gap:clamp(18px,5vw,84px)}
+.center .dot{width:2px;height:2px;background:var(--ink);border-radius:50%}
+.name{font-weight:100!important;letter-spacing:.01em}
+.right{display:flex;justify-content:flex-end;align-items:center;gap:clamp(18px,5vw,90px)}
+.lang{display:flex;align-items:center;gap:.35em}
+.lang button{font-weight:100}
+.lang button[aria-pressed="true"]{font-weight:500}
+.lang span{font-family:var(--f-display);font-weight:100;font-size:clamp(22px,2.6vw,40px)}
+.burger{width:clamp(26px,2.2vw,36px);height:20px;position:relative}
+.burger i{position:absolute;left:0;right:0;height:1px;background:var(--ink);transition:transform .3s,top .3s,opacity .3s}
+.burger i:nth-child(1){top:2px}.burger i:nth-child(2){top:10px}.burger i:nth-child(3){top:18px}
+.burger[aria-expanded="true"] i:nth-child(1){top:10px;transform:rotate(45deg)}
+.burger[aria-expanded="true"] i:nth-child(2){opacity:0}
+.burger[aria-expanded="true"] i:nth-child(3){top:10px;transform:rotate(-45deg)}
+.left a.contact-link{justify-self:start}
+@media (max-width:760px){
+  .center a:not(.name),.center .dot,.left{visibility:hidden}
+  .center a:not(.name),.center .dot{display:none}
+  .bar{grid-template-columns:0 1fr auto}
+  .center{justify-content:flex-start}
+}
+
+/* Menü-Overlay */
+.menu{position:fixed;inset:0;z-index:40;background:var(--ink);color:var(--paper);display:flex;align-items:flex-end;
+  padding-block:calc(env(safe-area-inset-top,0px) + 140px) calc(env(safe-area-inset-bottom,0px) + 48px)}
+.menu nav{display:flex;flex-direction:column;gap:4px}
+.menu nav a{font-family:var(--f-display);text-transform:uppercase;font-size:clamp(64px,13vw,190px);line-height:.88;font-weight:700;transition:opacity .2s}
+.menu nav a:hover{opacity:.5}
+.menu .sub{margin-top:28px;font-size:14px;color:#9a9a9a;display:flex;gap:24px;flex-wrap:wrap}
+
+/* Bühne */
+.stage{background:var(--ink);color:var(--paper);position:relative;overflow:hidden;aspect-ratio:1700/1015;max-height:86vh;min-height:360px;width:100%;max-width:100%}
+.stage .ph{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#3a3a3a;font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+.stage .ph span{border:1px dashed #333;padding:10px 16px}
+
+/* Abschnitte */
+section{padding-block:clamp(72px,10vw,150px)}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:clamp(28px,4vw,56px)}
+.head h2{font-size:clamp(72px,13vw,200px);font-weight:800;margin:0}
+.head .idx{font-family:var(--f-display);font-weight:100;font-size:clamp(28px,3vw,44px);text-transform:uppercase}
+
+.filters{display:flex;gap:clamp(14px,2.2vw,32px);flex-wrap:wrap}
+.filters button{font-family:var(--f-display);text-transform:uppercase;font-size:clamp(20px,2vw,28px);background:none;border:0;color:var(--grey);cursor:pointer;padding:0 0 4px;font-weight:300;border-bottom:1px solid transparent}
+.filters button:hover{color:var(--ink)}
+.filters button[aria-pressed="true"]{color:var(--ink);font-weight:500;border-bottom-color:var(--ink)}
+
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(12px,1.6vw,24px)}
+@media (max-width:760px){.grid{grid-template-columns:1fr}}
+.card{display:flex;flex-direction:column;gap:14px}
+.card[hidden]{display:none!important}
+.pic{aspect-ratio:4/3;background:var(--soft);position:relative;overflow:hidden;max-width:100%}
+.pic .in{position:absolute;inset:0;transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+.card:hover .pic .in{transform:scale(1.04)}
+.pic .tag{position:absolute;left:14px;top:12px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey)}
+.p1 .in{background:linear-gradient(135deg,#e9e9e9,#cfcfcf)}
+.p2 .in{background:#111}
+.p2 .tag{color:#777}
+.p3 .in{background:radial-gradient(60% 60% at 50% 55%,#bdbdbd,#efefef)}
+.p4 .in{background:linear-gradient(0deg,#1b1b1b 0 50%,#e6e6e6 50% 100%)}
+.p4 .tag{color:#777}
+.meta{display:flex;justify-content:space-between;align-items:baseline;gap:16px;border-top:1px solid var(--ink);padding-top:12px}
+.meta h3{font-family:var(--f-display);text-transform:uppercase;font-size:clamp(30px,3vw,46px);font-weight:500;line-height:.95;margin:0}
+.meta p{margin:4px 0 0;color:var(--grey);font-size:14px}
+.meta .yr{font-family:var(--f-display);font-weight:100;font-size:clamp(24px,2.2vw,34px);font-variant-numeric:tabular-nums}
+
+.about{background:var(--ink);color:var(--paper)}
+.about .head h2{color:var(--paper)}
+.about-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(32px,6vw,110px);align-items:start}
+@media (max-width:860px){.about-grid{grid-template-columns:1fr}}
+.statement{font-family:var(--f-display);text-transform:uppercase;font-size:clamp(40px,5.4vw,84px);line-height:.95;font-weight:300;margin:0;text-wrap:balance}
+.statement b{font-weight:700}
+.about p.body{color:#b5b5b5;max-width:46ch;margin:0}
+.facts{margin:36px 0 0;display:grid;gap:18px}
+.facts div{border-top:1px solid var(--ink-line);padding-top:12px;display:flex;justify-content:space-between;gap:16px}
+.facts dt{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8a8a8a}
+.facts dd{margin:0;text-align:right}
+
+.svc{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--ink)}
+@media (max-width:900px){.svc{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.svc{grid-template-columns:1fr}}
+.svc div{padding:22px 22px 30px 0;min-width:0;border-bottom:1px solid var(--line)}
+.svc h3{font-family:var(--f-display);text-transform:uppercase;font-size:clamp(32px,2.8vw,44px);line-height:.92;font-weight:500;margin:0}
+.svc p{color:var(--grey);font-size:15px;margin:12px 0 0;max-width:30ch}
+
+.contact{background:var(--ink);color:var(--paper);text-align:left}
+.contact h2{font-family:var(--f-display);text-transform:uppercase;font-size:clamp(84px,17vw,280px);line-height:.84;font-weight:800;margin:0}
+.contact h2 span{font-weight:100;display:block}
+.contact-row{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;margin-top:clamp(36px,5vw,64px);border-top:1px solid var(--ink-line);padding-top:24px}
+.contact-row p{color:#a5a5a5;margin:0;max-width:40ch}
+.mail{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.mail code{font-family:var(--f-display);font-size:clamp(30px,3.4vw,52px);text-transform:uppercase;user-select:all;font-weight:400}
+.mail button{font:inherit;font-size:13px;letter-spacing:.08em;text-transform:uppercase;background:transparent;color:var(--paper);border:1px solid #555;padding:8px 14px;cursor:pointer}
+.mail button:hover{border-color:var(--paper)}
+#copy-msg{font-size:13px;color:#8a8a8a;margin-top:10px}
+
+footer{background:var(--ink);color:#8a8a8a;font-size:13px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:24px 36px;border-top:1px solid var(--ink-line)}
+footer a:hover{color:var(--paper)}
+
+@keyframes up{from{transform:translateY(10px);opacity:.001}to{transform:none;opacity:1}}
+.bar>*{animation:up .8s cubic-bezier(.2,.7,.2,1) both}
+.bar>*:nth-child(2){animation-delay:.08s}.bar>*:nth-child(3){animation-delay:.16s}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
 </head>
 <body>
-  <main>
-    <h1>KADER HOSAF</h1>
-    <p>Creative Portfolio 2026</p>
-  </main>
+
+<header class="top">
+  <div class="wrap bar">
+    <div class="left"><a class="contact-link" href="#contact" data-en="Contact">Kontakt</a></div>
+    <div class="center">
+      <a href="#about" data-en="About">About</a>
+      <span class="dot" aria-hidden="true"></span>
+      <a class="name" href="#top">Kader Hosaf</a>
+      <span class="dot" aria-hidden="true"></span>
+      <a href="#work" data-en="Work">Work</a>
+    </div>
+    <div class="right">
+      <div class="lang" role="group" aria-label="Sprache">
+        <button type="button" id="l-de" data-l="de" aria-pressed="true">DE</button><span aria-hidden="true">/</span><button type="button" id="l-en" data-l="en" aria-pressed="false">EN</button>
+      </div>
+      <button type="button" class="burger" id="burger" aria-label="Menü öffnen" aria-expanded="false" aria-controls="menu"><i></i><i></i><i></i></button>
+    </div>
+  </div>
+</header>
+
+<div class="menu" id="menu" hidden>
+  <div class="wrap">
+    <nav aria-label="Menü">
+      <a href="#about">About</a>
+      <a href="#work">Work</a>
+      <a href="#services" data-en="Services">Leistungen</a>
+      <a href="#contact" data-en="Contact">Kontakt</a>
+    </nav>
+    <div class="sub"><span>Kader Hosaf</span><span data-en="Graphic design · Illustration">Grafikdesign · Illustration</span></div>
+  </div>
+</div>
+
+<main id="top">
+  <div class="stage" role="img" aria-label="Platzhalter für Titelbild oder Video">
+    <div class="ph"><span data-en="Hero image or showreel">Titelbild oder Showreel</span></div>
+  </div>
+
+  <section id="work">
+    <div class="wrap">
+      <div class="head">
+        <h2 class="d">Work</h2>
+        <div class="filters" role="group" aria-label="Projekte filtern">
+          <button type="button" id="f-all" data-f="all" aria-pressed="true" data-en="All">Alle</button>
+          <button type="button" id="f-brand" data-f="brand" aria-pressed="false">Branding</button>
+          <button type="button" id="f-illu" data-f="illu" aria-pressed="false" data-en="Illustration">Illustration</button>
+          <button type="button" id="f-print" data-f="print" aria-pressed="false">Print</button>
+        </div>
+      </div>
+      <div class="grid">
+        <a class="card p1" href="#work" data-cat="brand">
+          <div class="pic"><div class="in"></div><span class="tag" data-en="Example">Beispiel</span></div>
+          <div class="meta"><div><h3>Projekt Eins</h3><p data-en="Logo · Corporate design">Logo · Corporate Design</p></div><span class="yr">2026</span></div>
+        </a>
+        <a class="card p2" href="#work" data-cat="illu">
+          <div class="pic"><div class="in"></div><span class="tag" data-en="Example">Beispiel</span></div>
+          <div class="meta"><div><h3>Projekt Zwei</h3><p data-en="Illustration series">Illustrationsreihe</p></div><span class="yr">2025</span></div>
+        </a>
+        <a class="card p3" href="#work" data-cat="print">
+          <div class="pic"><div class="in"></div><span class="tag" data-en="Example">Beispiel</span></div>
+          <div class="meta"><div><h3>Projekt Drei</h3><p data-en="Poster · Editorial">Plakat · Editorial</p></div><span class="yr">2025</span></div>
+        </a>
+        <a class="card p4" href="#work" data-cat="brand">
+          <div class="pic"><div class="in"></div><span class="tag" data-en="Example">Beispiel</span></div>
+          <div class="meta"><div><h3>Projekt Vier</h3><p data-en="Packaging">Verpackung</p></div><span class="yr">2024</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="about" id="about">
+    <div class="wrap">
+      <div class="head"><h2 class="d">About</h2></div>
+      <div class="about-grid">
+        <p class="statement" data-en-html="Design has to <b>feel right</b> and make sense. Then it stays.">Design muss sich <b>richtig anfühlen</b> und Sinn ergeben. Dann bleibt es.</p>
+        <div>
+          <p class="body" data-en="Here goes a short text about you: where you come from, what drives you and how you work. Two or three sentences are enough.">Hier steht ein kurzer Text über dich: woher du kommst, was dich antreibt und wie du arbeitest. Zwei, drei Sätze reichen.</p>
+          <dl class="facts">
+            <div><dt data-en="Focus">Fokus</dt><dd data-en="Graphic design, illustration">Grafikdesign, Illustration</dd></div>
+            <div><dt>Tools</dt><dd>Illustrator</dd></div>
+            <div><dt data-en="Based in">Standort</dt><dd data-en="Germany">Deutschland</dd></div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="services">
+    <div class="wrap">
+      <div class="head"><h2 class="d" data-en="Services">Leistungen</h2></div>
+      <div class="svc">
+        <div><h3>Brand Design</h3><p data-en="Logo, colours, typography and a system that grows with you.">Logo, Farben, Typografie und ein System, das mitwächst.</p></div>
+        <div><h3>Illustration</h3><p data-en="Custom illustrations for brands, print and digital.">Eigene Illustrationen für Marken, Print und Digital.</p></div>
+        <div><h3>Print</h3><p data-en="Posters, flyers, packaging – ready for press.">Plakate, Flyer, Verpackung – druckfertig.</p></div>
+        <div><h3>Social Media</h3><p data-en="Templates and visuals that are recognisable on every channel.">Vorlagen und Visuals, die auf jedem Kanal erkennbar sind.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="wrap">
+      <h2 data-en-html="Let's<span>talk.</span>">Lass uns<span>reden.</span></h2>
+      <div class="contact-row">
+        <p data-en="No sales pitch, no obligation. Just tell me what you have in mind.">Kein Verkaufsgespräch, keine Verpflichtung. Erzähl mir einfach, was du vorhast.</p>
+        <div>
+          <div class="mail"><code id="mail">hallo@kaderhosaf.de</code><button type="button" id="copy" data-en="Copy">Kopieren</button></div>
+          <div id="copy-msg" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Kader Hosaf</span>
+    <span><a href="#top">Impressum</a> · <a href="#top" data-en="Privacy">Datenschutz</a></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Filter
+  const fb=[...document.querySelectorAll('.filters button')], cards=[...document.querySelectorAll('.card')];
+  fb.forEach(b=>b.addEventListener('click',()=>{
+    fb.forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));
+    cards.forEach(c=>c.hidden=!(b.dataset.f==='all'||c.dataset.cat===b.dataset.f));
+  }));
+  // Menü
+  const burger=document.getElementById('burger'), menu=document.getElementById('menu');
+  const setMenu=open=>{menu.hidden=!open;burger.setAttribute('aria-expanded',open);burger.setAttribute('aria-label',open?'Menü schließen':'Menü öffnen');};
+  burger.addEventListener('click',()=>setMenu(menu.hidden));
+  menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setMenu(false)));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')setMenu(false)});
+  // Sprache
+  document.querySelectorAll('[data-en]').forEach(el=>el.dataset.de=el.textContent);
+  document.querySelectorAll('[data-en-html]').forEach(el=>el.dataset.deHtml=el.innerHTML);
+  const lb=[...document.querySelectorAll('.lang button')];
+  const setLang=l=>{
+    lb.forEach(x=>x.setAttribute('aria-pressed',x.dataset.l===l?'true':'false'));
+    document.documentElement.lang=l;
+    document.querySelectorAll('[data-en]').forEach(el=>el.textContent=l==='en'?el.dataset.en:el.dataset.de);
+    document.querySelectorAll('[data-en-html]').forEach(el=>el.innerHTML=l==='en'?el.dataset.enHtml:el.dataset.deHtml);
+    msg.textContent='';
+  };
+  lb.forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.l)));
+  // Kopieren
+  const copy=document.getElementById('copy'), msg=document.getElementById('copy-msg'), mail=document.getElementById('mail');
+  const en=()=>document.documentElement.lang==='en';
+  copy.addEventListener('click',()=>{
+    const sel=()=>{const r=document.createRange();r.selectNodeContents(mail);const s=getSelection();s.removeAllRanges();s.addRange(r);msg.textContent=en()?'Selected – press Cmd+C':'Markiert – mit Cmd+C kopieren';};
+    try{navigator.clipboard.writeText(mail.textContent.trim()).then(()=>{msg.textContent=en()?'Copied':'Kopiert';},sel);}catch(e){sel();}
+  });
+  document.documentElement.lang='de';
+})();
+</script>
 </body>
 </html>
