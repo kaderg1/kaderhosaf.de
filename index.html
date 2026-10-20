@@ -23,7 +23,11 @@
   color-scheme:light;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0}
+img{max-width:100%}
 html{scroll-behavior:smooth}
+html,body{overflow-x:clip}
 body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--paper)}
 a{color:inherit;text-decoration:none}
@@ -54,12 +58,16 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;backgroun
 .burger[aria-expanded="true"] i:nth-child(3){top:10px;transform:rotate(-45deg)}
 .left a.contact-link{justify-self:start}
 @media (max-width:760px){
-  .center a:not(.name),.center .dot,.left{visibility:hidden}
-  .center a:not(.name),.center .dot{display:none}
-  .bar{grid-template-columns:0 1fr auto}
-  .center{justify-content:flex-start}
+  .bar{grid-template-columns:auto 1fr auto;grid-template-areas:"name name right" "contact about work";height:auto;padding-block:14px 14px;row-gap:14px}
+  .left,.center{display:contents}
+  .center .dot{display:none}
+  .contact-link{grid-area:contact;justify-self:start}
+  .nav-about{grid-area:about;justify-self:center}
+  .nav-work{grid-area:work;justify-self:end}
+  .name{grid-area:name;justify-self:start}
+  .right{grid-area:right;gap:18px}
+  .bar a,.bar button,.lang span{font-size:clamp(20px,6vw,26px);white-space:nowrap}
 }
-
 /* Menü-Overlay */
 .menu{position:fixed;inset:0;z-index:40;background:var(--ink);color:var(--paper);display:flex;align-items:flex-end;
   padding-block:calc(env(safe-area-inset-top,0px) + 140px) calc(env(safe-area-inset-bottom,0px) + 48px)}
@@ -76,7 +84,7 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;backgroun
 /* Abschnitte */
 section{padding-block:clamp(72px,10vw,150px)}
 .head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:clamp(28px,4vw,56px)}
-.head h2{font-size:clamp(72px,13vw,200px);font-weight:800;margin:0}
+.head h2{font-size:clamp(60px,13vw,200px);font-weight:800;margin:0;max-width:100%;hyphens:auto;overflow-wrap:break-word}
 .head .idx{font-family:var(--f-display);font-weight:100;font-size:clamp(28px,3vw,44px);text-transform:uppercase}
 
 .filters{display:flex;gap:clamp(14px,2.2vw,32px);flex-wrap:wrap}
@@ -128,7 +136,7 @@ section{padding-block:clamp(72px,10vw,150px)}
 .contact-row{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;margin-top:clamp(36px,5vw,64px);border-top:1px solid var(--ink-line);padding-top:24px}
 .contact-row p{color:#a5a5a5;margin:0;max-width:40ch}
 .mail{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.mail code{font-family:var(--f-display);font-size:clamp(30px,3.4vw,52px);text-transform:uppercase;user-select:all;font-weight:400}
+.mail code{font-family:var(--f-display);font-size:clamp(30px,3.4vw,52px);user-select:all;font-weight:400;letter-spacing:.01em;word-break:break-all}
 .mail button{font:inherit;font-size:13px;letter-spacing:.08em;text-transform:uppercase;background:transparent;color:var(--paper);border:1px solid #555;padding:8px 14px;cursor:pointer}
 .mail button:hover{border-color:var(--paper)}
 #copy-msg{font-size:13px;color:#8a8a8a;margin-top:10px}
@@ -149,11 +157,11 @@ footer a:hover{color:var(--paper)}
   <div class="wrap bar">
     <div class="left"><a class="contact-link" href="#contact" data-en="Contact">Kontakt</a></div>
     <div class="center">
-      <a href="#about" data-en="About">About</a>
+      <a class="nav-about" href="#about" data-en="About">Über mich</a>
       <span class="dot" aria-hidden="true"></span>
       <a class="name" href="#top">Kader Hosaf</a>
       <span class="dot" aria-hidden="true"></span>
-      <a href="#work" data-en="Work">Work</a>
+      <a class="nav-work" href="#work" data-en="Work">Arbeiten</a>
     </div>
     <div class="right">
       <div class="lang" role="group" aria-label="Sprache">
@@ -167,8 +175,8 @@ footer a:hover{color:var(--paper)}
 <div class="menu" id="menu" hidden>
   <div class="wrap">
     <nav aria-label="Menü">
-      <a href="#about">About</a>
-      <a href="#work">Work</a>
+      <a href="#about" data-en="About">Über mich</a>
+      <a href="#work" data-en="Work">Arbeiten</a>
       <a href="#services" data-en="Services">Leistungen</a>
       <a href="#contact" data-en="Contact">Kontakt</a>
     </nav>
@@ -184,7 +192,7 @@ footer a:hover{color:var(--paper)}
   <section id="work">
     <div class="wrap">
       <div class="head">
-        <h2 class="d">Work</h2>
+        <h2 class="d" data-en="Work">Arbeiten</h2>
         <div class="filters" role="group" aria-label="Projekte filtern">
           <button type="button" id="f-all" data-f="all" aria-pressed="true" data-en="All">Alle</button>
           <button type="button" id="f-brand" data-f="brand" aria-pressed="false">Branding</button>
@@ -215,7 +223,7 @@ footer a:hover{color:var(--paper)}
 
   <section class="about" id="about">
     <div class="wrap">
-      <div class="head"><h2 class="d">About</h2></div>
+      <div class="head"><h2 class="d" data-en="About">Über mich</h2></div>
       <div class="about-grid">
         <p class="statement" data-en-html="Design has to <b>feel right</b> and make sense. Then it stays.">Design muss sich <b>richtig anfühlen</b> und Sinn ergeben. Dann bleibt es.</p>
         <div>
@@ -248,7 +256,7 @@ footer a:hover{color:var(--paper)}
       <div class="contact-row">
         <p data-en="No sales pitch, no obligation. Just tell me what you have in mind.">Kein Verkaufsgespräch, keine Verpflichtung. Erzähl mir einfach, was du vorhast.</p>
         <div>
-          <div class="mail"><code id="mail">hallo@kaderhosaf.de</code><button type="button" id="copy" data-en="Copy">Kopieren</button></div>
+          <div class="mail"><code id="mail">kaderhsf@mail.com</code><button type="button" id="copy" data-en="Copy">Kopieren</button></div>
           <div id="copy-msg" aria-live="polite"></div>
         </div>
       </div>
