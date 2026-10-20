@@ -63,7 +63,10 @@ section{scroll-margin-top:clamp(100px,7vw,110px)}
   .bar{grid-template-columns:minmax(0,1fr) auto;height:auto;padding-block:16px;gap:20px}
   .left{display:none}
   .center{justify-content:space-between;gap:10px;min-width:0}
-  .center .dot{width:3px;height:3px}
+  .center .dot{display:none}
+  .bar{position:relative}
+  .bar>*{animation:none!important}
+  .bar .name{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
   .bar .lang{display:none}
   .right{gap:0}
   .bar a,.bar button{font-size:clamp(18px,5.4vw,23px);white-space:nowrap}
@@ -91,6 +94,8 @@ section{scroll-margin-top:clamp(100px,7vw,110px)}
 .menu-lang button{font-family:var(--f-display);text-transform:uppercase;font-size:30px;line-height:1;background:none;border:0;color:#fff;padding:0;cursor:pointer}
 .menu-lang span{color:#fff;font-size:30px}
 @media (max-width:760px){.menu-lang{display:flex}}
+.menu-lang button[aria-pressed="true"]{color:var(--accent)}
+.menu nav a.tapped,.menu nav a:active,.menu-group.open .group-link{color:var(--accent)}
 .menu .sub{margin-top:0;font-size:14px;color:#fff;display:flex;gap:24px;flex-wrap:wrap}
 @media (max-width:760px){.menu{width:min(360px,84vw)}}
 @media (prefers-reduced-motion:reduce){.menu,.menu.open{transition:none}}
@@ -402,7 +407,9 @@ footer a:hover{color:var(--paper)}
   scrim.addEventListener('click',()=>setMenu(false));
   menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
     if(a.dataset.filter){const fbtn=document.querySelector('.filters button[data-f="'+a.dataset.filter+'"]');if(fbtn)fbtn.click();}
-    setMenu(false);
+    menu.querySelectorAll('a.tapped').forEach(x=>x.classList.remove('tapped'));
+    a.classList.add('tapped');
+    setTimeout(()=>{setMenu(false);a.classList.remove('tapped');},280);
   }));
   document.addEventListener('keydown',e=>{if(e.key==='Escape')setMenu(false)});
   // Sprache
