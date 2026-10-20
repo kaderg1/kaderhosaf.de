@@ -60,21 +60,20 @@ section{scroll-margin-top:clamp(100px,7vw,110px)}
 .burger[aria-expanded="true"] i:nth-child(3){top:10px;transform:rotate(-45deg)}
 .left a.contact-link{justify-self:start}
 @media (max-width:760px){
-  .bar{grid-template-columns:auto 1fr auto;grid-template-areas:"name name right" "contact about work";height:auto;padding-block:14px 14px;row-gap:14px}
-  .left,.center{display:contents}
-  .center .dot{display:none}
-  .contact-link{grid-area:contact;justify-self:start}
-  .nav-about{grid-area:about;justify-self:center}
-  .nav-work{grid-area:work;justify-self:end}
-  .name{grid-area:name;justify-self:start}
-  .right{grid-area:right;gap:18px}
-  .bar a,.bar button,.lang span{font-size:clamp(18px,5.4vw,23px);white-space:nowrap}
+  .bar{grid-template-columns:minmax(0,1fr) auto;height:auto;padding-block:16px;gap:20px}
+  .left{display:none}
+  .center{justify-content:space-between;gap:10px;min-width:0}
+  .center .dot{width:3px;height:3px}
+  .bar .lang{display:none}
+  .right{gap:0}
+  .bar a,.bar button{font-size:clamp(18px,5.4vw,23px);white-space:nowrap}
 }
+
 /* Menü: seitlicher, transparenter schwarzer Slide */
 .menu{position:fixed;top:0;right:0;bottom:0;z-index:45;width:min(440px,40vw);
   background:rgba(10,10,10,.72);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);
   color:#fff;display:flex;flex-direction:column;justify-content:space-between;
-  padding:calc(env(safe-area-inset-top,0px) + clamp(90px,9vw,130px)) max(28px,calc(env(safe-area-inset-right,0px) + 28px)) calc(env(safe-area-inset-bottom,0px) + 36px) clamp(28px,4vw,56px);
+  padding:calc(env(safe-area-inset-top,0px) + var(--hh,96px) + clamp(24px,3vw,40px)) max(28px,calc(env(safe-area-inset-right,0px) + 28px)) calc(env(safe-area-inset-bottom,0px) + 36px) clamp(28px,4vw,56px);
   transform:translateX(100%);visibility:hidden;transition:transform .5s cubic-bezier(.2,.7,.2,1),visibility 0s linear .5s;overflow-y:auto}
 .menu.open{transform:none;visibility:visible;transition:transform .5s cubic-bezier(.2,.7,.2,1),visibility 0s}
 .menu-scrim{position:fixed;inset:0;z-index:44;background:transparent;display:none}
@@ -87,7 +86,12 @@ section{scroll-margin-top:clamp(100px,7vw,110px)}
 .menu-group:hover .subnav,.menu-group:focus-within .subnav,.menu-group.open .subnav{max-height:180px;opacity:1;margin:14px 0 4px 4px}
 .menu .subnav{display:flex;flex-direction:column;gap:12px;padding-left:16px;border-left:1px solid rgba(255,255,255,.35)}
 .menu .subnav a{font-size:clamp(20px,1.7vw,26px);font-weight:400}
-.menu .sub{margin-top:40px;font-size:14px;color:#fff;display:flex;gap:24px;flex-wrap:wrap}
+.menu-foot{margin-top:40px;display:flex;flex-direction:column;gap:18px}
+.menu-lang{display:none}
+.menu-lang button{font-family:var(--f-display);text-transform:uppercase;font-size:30px;line-height:1;background:none;border:0;color:#fff;padding:0;cursor:pointer}
+.menu-lang span{color:#fff;font-size:30px}
+@media (max-width:760px){.menu-lang{display:flex}}
+.menu .sub{margin-top:0;font-size:14px;color:#fff;display:flex;gap:24px;flex-wrap:wrap}
 @media (max-width:760px){.menu{width:min(360px,84vw)}}
 @media (prefers-reduced-motion:reduce){.menu,.menu.open{transition:none}}
 
@@ -234,7 +238,12 @@ footer a:hover{color:var(--paper)}
     <a href="#contact" data-en="Contact">Kontakt</a>
     <a href="#impressum" data-en="Legal notice">Impressum</a>
   </nav>
+  <div class="menu-foot">
+    <div class="lang menu-lang" role="group" aria-label="Sprache">
+      <button type="button" id="l-de-m" data-l="de" aria-pressed="true">DE</button><span aria-hidden="true">/</span><button type="button" id="l-en-m" data-l="en" aria-pressed="false">EN</button>
+    </div>
   <div class="sub"><span>Kader Hosaf</span><span>Industrial Design · Graphic Design</span></div>
+  </div>
 </div>
 
 <main id="top">
@@ -368,6 +377,9 @@ footer a:hover{color:var(--paper)}
     });
     svc.addEventListener('pointerleave',reset);
   }
+  // Höhe der Menüleiste merken, damit das Seitenmenü darunter beginnt
+  const setHH=()=>document.documentElement.style.setProperty('--hh',document.querySelector('header.top').offsetHeight+'px');
+  setHH(); window.addEventListener('resize',setHH); if(document.fonts&&document.fonts.ready)document.fonts.ready.then(setHH);
   // Filter
   const fb=[...document.querySelectorAll('.filters button')], cards=[...document.querySelectorAll('.card')];
   fb.forEach(b=>b.addEventListener('click',()=>{
