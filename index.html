@@ -146,6 +146,23 @@ section{padding-block:clamp(72px,10vw,150px)}
 .about .head h2{color:var(--paper)}
 #work{background:var(--soft)}
 #work .pic{background:#e4e4e4}
+/* 3D-Projekt mit Explosionsansicht */
+.pic-3d{touch-action:pan-y}
+.pic-3d canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab}
+.pic-3d canvas.drag{cursor:grabbing}
+.x3d-hint{position:absolute;left:14px;bottom:12px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey);pointer-events:none}
+.x3d-btn{position:absolute;right:12px;bottom:10px;font-family:var(--f-display);text-transform:uppercase;font-size:20px;line-height:1;background:transparent;color:var(--ink);border:1px solid var(--ink);padding:8px 12px 6px;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.x3d-btn:hover,.x3d-btn:focus-visible{border-color:var(--accent);color:var(--accent);outline:none}
+.x3d-btn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+@media (max-width:480px){.x3d-hint{display:none}}
+.card-3d .pic-3d canvas{pointer-events:none}
+#work .card-3d .pic-3d{background:radial-gradient(ellipse 45% 55% at 50% 52%,#3a3a3a 0%,#1e1e1e 55%,#141414 100%)}
+.card-3d .x3d-more{color:#fff;border-color:#fff}
+.card-3d .tag{color:#9a9a9a}
+.x3d-more{position:absolute;right:12px;bottom:10px;font-family:var(--f-display);text-transform:uppercase;font-size:20px;line-height:1;color:var(--ink);border:1px solid var(--ink);padding:8px 12px 6px;transition:background .2s,color .2s,border-color .2s}
+.card-3d:hover .x3d-more,.card-3d:focus-visible .x3d-more{background:var(--accent);border-color:var(--accent);color:#fff}
+.card-3d:hover h3{color:var(--accent)}
+
 .about-grid{display:grid;grid-template-columns:var(--mcol,55%) minmax(0,1fr);gap:0;align-items:start}
 .about-grid>div{grid-column:2}
 .about .statement{color:var(--paper);margin:clamp(40px,5vw,72px) 0 clamp(36px,4.4vw,64px);font-size:clamp(38px,4.6vw,84px);text-align:right;white-space:nowrap}
@@ -170,7 +187,7 @@ section{padding-block:clamp(72px,10vw,150px)}
 .svc.focus .svc-cell{border-bottom-color:var(--ink)}
 .svc-in{padding:22px 22px 30px 0;background:transparent;transition:transform .55s cubic-bezier(.2,.7,.2,1),filter .4s,opacity .4s,box-shadow .4s,background .3s;will-change:transform}
 .svc{position:relative}
-.svc::before{content:"";position:absolute;inset:-24px -24px -24px -24px;background:rgba(10,10,10,.12);opacity:0;transition:opacity .4s;pointer-events:none;z-index:1}
+.svc::before{content:"";position:absolute;inset:-24px -16px;background:rgba(10,10,10,.12);opacity:0;transition:opacity .4s;pointer-events:none;z-index:1}
 .svc.focus::before{opacity:1}
 .svc.focus .svc-cell:not(.active) .svc-in{filter:blur(3px);opacity:.7}
 .svc-cell.active{z-index:3}
@@ -207,7 +224,6 @@ footer a:hover{color:var(--paper)}
 </style>
 </head>
 <body>
-
 <header class="top">
   <div class="wrap bar">
     <div class="left"><a class="contact-link" href="#contact" data-en="Contact">Kontakt</a></div>
@@ -284,9 +300,13 @@ footer a:hover{color:var(--paper)}
         </div>
       </div>
       <div class="grid">
-        <a class="card p1" href="#work" data-cat="ind">
-          <div class="pic"><div class="in"></div><span class="tag" data-en="Example">Beispiel</span></div>
-          <div class="meta"><div><h3>Projekt Eins</h3><p data-en="Industrial Design · Product concept">Industrial Design · Produktkonzept</p></div><span class="yr">2026</span></div>
+        <a class="card p1 card-3d" href="bento.html" data-cat="ind">
+          <div class="pic pic-3d" id="bento-stage">
+            <canvas id="bento-canvas" aria-hidden="true"></canvas>
+            <span class="tag x3d-load" id="bento-status" data-en="Loading 3D model …">3D-Modell lädt …</span>
+            <span class="x3d-more" data-en="View project →">Projekt ansehen →</span>
+          </div>
+          <div class="meta"><div><h3>ONERA</h3><p data-en="Industrial Design · 3D model">Industrial Design · 3D-Modell</p></div><span class="yr">2025</span></div>
         </a>
         <a class="card p2" href="#work" data-cat="gfx">
           <div class="pic"><div class="in"></div><span class="tag" data-en="Example">Beispiel</span></div>
@@ -424,6 +444,107 @@ footer a:hover{color:var(--paper)}
   };
   lb.forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.l)));
   document.documentElement.lang='de';
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script>
+// Bento: 3D-Ansicht mit Explosionsfunktion (lädt erst, wenn der Bereich ins Bild kommt)
+function initBento(o){
+  const stageEl=o.stage; if(!stageEl)return null;
+  const canvas=o.canvas, btn=o.btn, statusEl=o.status, interactive=!!o.interactive;
+  const en=()=>document.documentElement.lang==='en';
+  const api={explode:v=>{target=v;label();},zoom:()=>{}};
+  let target=0, current=0, started=false;
+  const label=()=>{ if(!btn)return; const on=target>.5; btn.classList.toggle('on',on);
+    btn.dataset.en=on?'Assemble':'Explode'; btn.dataset.de=on?'Zusammensetzen':'Explodieren'; btn.textContent=en()?btn.dataset.en:btn.dataset.de; };
+  function start(){
+    if(started)return; started=true;
+    if(!window.THREE||!THREE.GLTFLoader||!THREE.OrbitControls){ if(statusEl)statusEl.textContent=en()?'3D could not be loaded':'3D konnte nicht geladen werden'; return; }
+    const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+    renderer.outputEncoding=THREE.sRGBEncoding; renderer.physicallyCorrectLights=true;
+    renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.1;
+    const scene=new THREE.Scene(), camera=new THREE.PerspectiveCamera(30,4/3,0.001,100);
+    scene.add(new THREE.HemisphereLight(0xffffff,0x9a9a9a,2.2));
+    const key=new THREE.DirectionalLight(0xffffff,3); key.position.set(2,4,3); scene.add(key);
+    const fill=new THREE.DirectionalLight(0xffffff,1.2); fill.position.set(-3,2,-2); scene.add(fill);
+    // sehr leichtes Gegenlicht hinter der Box, damit sie sich vom dunklen Hintergrund löst
+    const back=new THREE.DirectionalLight(0xfff4f8,2.2); back.position.set(-1,2.5,-4); scene.add(back);
+    const pm=new THREE.PMREMGenerator(renderer), envScene=new THREE.Scene(); envScene.background=new THREE.Color(0xdedede);
+    const l1=new THREE.Mesh(new THREE.PlaneGeometry(4,4),new THREE.MeshBasicMaterial({color:0xffffff})); l1.position.set(0,3,0); l1.rotation.x=Math.PI/2; envScene.add(l1);
+    scene.environment=pm.fromScene(envScene,0.04).texture;
+    const controls=new THREE.OrbitControls(camera,canvas);
+    canvas.style.touchAction='pan-y';
+    controls.enableDamping=true; controls.dampingFactor=.08; controls.enablePan=false;
+    controls.enabled=interactive; controls.autoRotate=true; controls.autoRotateSpeed=interactive?1:1.4;
+    controls.enableZoom=interactive; controls.zoomSpeed=.8;
+    let parts=[], model=null;
+    const onModel=gltf=>{
+      model=gltf.scene; scene.add(model);
+      let box=new THREE.Box3().setFromObject(model); const c=box.getCenter(new THREE.Vector3());
+      model.position.x-=c.x; model.position.z-=c.z; model.position.y-=box.min.y; model.updateMatrixWorld(true);
+      box=new THREE.Box3().setFromObject(model); const size=box.getSize(new THREE.Vector3());
+      // Bauteile = Kinder der ersten Ebene mit mehreren Objekten (Band, Deckel, Heizplatte, Schüssel)
+      let n=model; while(n.children.length===1)n=n.children[0];
+      const info=(n.children.length>1?n.children:[]).map(o=>({o,b:new THREE.Box3().setFromObject(o)}));
+      const cy=p=>p.b.getCenter(new THREE.Vector3()).y;
+      const stack=info.filter(p=>!/band/i.test(p.o.name)).sort((a,b)=>cy(a)-cy(b));
+      const gap=size.y*0.75;
+      // Abstände wie in der Explosionszeichnung: Schüssel knapp über der Heizplatte, Deckel deutlich darüber
+      const lift=i=>i===0?0:(0.4+(i-1)*0.6)*size.y;
+      const toLocal=(o,d)=>{const w=o.getWorldPosition(new THREE.Vector3());return o.parent.worldToLocal(w.clone().add(d)).sub(o.parent.worldToLocal(w.clone()));};
+      stack.forEach((p,i)=>parts.push({o:p.o,base:p.o.position.clone(),off:toLocal(p.o,new THREE.Vector3(0,lift(i),0))}));
+      // Band blendet beim Explodieren aus (wie in der Explosionszeichnung)
+      info.filter(p=>/band/i.test(p.o.name)).forEach(p=>{
+        const mats=[]; p.o.traverse(m=>{ if(m.isMesh){ m.material=m.material.clone(); m.material.transparent=true; mats.push(m.material);} });
+        parts.push({o:p.o,base:p.o.position.clone(),off:new THREE.Vector3(),fade:mats});
+      });
+      const h=size.y+lift(Math.max(0,stack.length-1)), r=Math.max(size.x,size.z,h);
+      controls.target.set(0,h*0.42,0);
+      camera.position.set(r*1.15,r*1.25,r*2.6); // Startansicht: leicht von oben auf die lange Seite camera.near=r/100; camera.far=r*50; camera.updateProjectionMatrix();
+      controls.minDistance=r*1.2; controls.maxDistance=r*6; controls.update();
+      if(statusEl)statusEl.hidden=true;
+    };
+    const onFail=()=>{ if(statusEl)statusEl.textContent=en()?'3D model could not be loaded':'3D-Modell konnte nicht geladen werden'; };
+    const gl=new THREE.GLTFLoader();
+    if(window.BENTO_GLB_B64){ // nur für die Vorschau: Modell direkt in der Seite
+      const bin=atob(window.BENTO_GLB_B64), buf=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++)buf[i]=bin.charCodeAt(i);
+      gl.parse(buf.buffer,'',onModel,onFail);
+    } else gl.load('bento1.glb',onModel,undefined,onFail);
+
+    api.zoom=f=>{ const d=camera.position.clone().sub(controls.target); const L=THREE.MathUtils.clamp(d.length()*f,controls.minDistance||0,controls.maxDistance||1e9); camera.position.copy(controls.target).add(d.setLength(L)); controls.update(); };
+    if(interactive){
+      const toggle=()=>{target=target>.5?0:1;label();};
+      if(btn)btn.addEventListener('click',toggle);
+      const ray=new THREE.Raycaster(), ptr=new THREE.Vector2(); let down=null;
+      canvas.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY};canvas.classList.add('drag');controls.autoRotate=false;});
+      window.addEventListener('pointerup',e=>{canvas.classList.remove('drag'); if(!down)return; const m=Math.hypot(e.clientX-down.x,e.clientY-down.y); down=null;
+        if(m>6||!model)return; const rc=canvas.getBoundingClientRect(); ptr.set(((e.clientX-rc.left)/rc.width)*2-1,-((e.clientY-rc.top)/rc.height)*2+1);
+        ray.setFromCamera(ptr,camera); if(ray.intersectObject(model,true).length)toggle();});
+      window.addEventListener('pointercancel',()=>{down=null;canvas.classList.remove('drag');});
+    }
+    const resize=()=>{const w=stageEl.clientWidth,h=stageEl.clientHeight; if(!w||!h)return; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix();};
+    window.addEventListener('resize',resize); resize();
+    document.querySelectorAll('.filters button').forEach(b=>b.addEventListener('click',()=>setTimeout(resize,30)));
+    const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+    let visible=true;
+    if('IntersectionObserver' in window)new IntersectionObserver(es=>{visible=es[0].isIntersecting;}).observe(stageEl);
+    (function loop(){ requestAnimationFrame(loop); if(!visible||stageEl.offsetParent===null)return;
+      current+=(target-current)*.07; const e=ease(Math.min(1,Math.max(0,current)));
+      parts.forEach(p=>{ p.o.position.copy(p.base).addScaledVector(p.off,e);
+        if(p.fade){ const a=Math.max(0,1-e*2.2); p.fade.forEach(m=>m.opacity=a); p.o.visible=a>0.01; } });
+      controls.update(); renderer.render(scene,camera); })();
+  }
+  if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>{if(es.some(x=>x.isIntersecting)){io.disconnect();start();}},{rootMargin:'400px'});io.observe(stageEl);}
+  else start();
+  return api;
+}
+
+(function(){
+  const card=document.querySelector('.card-3d');
+  const v=initBento({stage:document.getElementById('bento-stage'),canvas:document.getElementById('bento-canvas'),status:document.getElementById('bento-status'),interactive:false});
 })();
 </script>
 </body>
